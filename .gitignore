@@ -1,3 +1,10 @@
+# local folders
+feature_importance/
+plots/
+models/
+shap_values/
+models_performance/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
