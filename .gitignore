@@ -4,6 +4,7 @@ plots/
 models/
 shap_values/
 models_performance/
+datasets/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

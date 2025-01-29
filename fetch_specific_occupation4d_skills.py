@@ -35,19 +35,17 @@ from pathlib import Path
 # Define API endpoints
 JOBS_URL = "http://skillab-tracker.csd.auth.gr/api/jobs"
 SKILLS_URL = "http://skillab-tracker.csd.auth.gr/api/skills"
-OCCUPATIONS_URL = "http://skillab-tracker.csd.auth.gr/api/occupations"
 
 # Define the datasets folder path
 datasets_folder = Path("datasets")
 datasets_folder.mkdir(exist_ok=True)  # Create folder if it doesn't exist
 
-def fetch_and_store_all_occupation_skills(min_level: int = 3, max_level: int = 3, min_skill_level: int = 4, max_skill_level: int = 4):
+def fetch_and_store_specific_occupation_skills(occupation_ids: list, min_skill_level: int = 4, max_skill_level: int = 4):
     """
-    Fetches occupation, job, and skill data from the Skillab Tracker API and stores it as a CSV file.
+    Fetches job and skill data from the Skillab Tracker API and stores it as a CSV file.
 
     Parameters:
-        min_level (int): Minimum level filter for occupations.
-        max_level (int): Maximum level filter for occupations.
+        occupation_ids (list): List of occupation IDs to retrieve job data for.
         min_skill_level (int): Minimum skill level filter for skills.
         max_skill_level (int): Maximum skill level filter for skills.
 
@@ -55,36 +53,11 @@ def fetch_and_store_all_occupation_skills(min_level: int = 3, max_level: int = 3
         str: Path to the saved CSV file.
     """
     try:
-        payload = {"min_level": min_level, "max_level": max_level}
-        
-        # Initialize containers for aggregated occupation data
-        occupation_ids_list = []
-        page = 1
-        
-        while True:
-            # Make the API call with pagination
-            response = requests.post(f"{OCCUPATIONS_URL}?page={page}", data=payload)
-            response.raise_for_status()  # Raise an error for bad status codes
-            
-            # Parse JSON response
-            response_data = response.json()
-            
-            # Extract occupation IDs
-            new_occupation_ids = [item["id"] for item in response_data.get("items", [])]
-            occupation_ids_list.extend(new_occupation_ids)
-            
-            # Check if there are more pages
-            total_count = response_data.get("count", 0)
-            if len(occupation_ids_list) >= total_count:
-                break
-            
-            page += 1
-        
         # Initialize containers for aggregated job and skill data
         all_jobs_data = []
         unique_skills = set()
         
-        for occupation_id in occupation_ids_list:
+        for occupation_id in occupation_ids:
             payload = {"occupation_ids": occupation_id}
             page = 1
             
@@ -141,7 +114,7 @@ def fetch_and_store_all_occupation_skills(min_level: int = 3, max_level: int = 3
         # Prepare the dataframe
         all_skill_labels = list(skill_labels.values())
         df_data = []
-        
+    
         for job in all_jobs_data:
             row = {
                 "job_id": job["job_id"],
@@ -160,8 +133,12 @@ def fetch_and_store_all_occupation_skills(min_level: int = 3, max_level: int = 3
     
         df = pd.DataFrame(df_data)
         
+        # Extract the last part of each URL to create a dynamic filename
+        occupation_codes = [occ.split("/")[-1] for occ in occupation_ids]
+        filename = f"specific_{'_'.join(occupation_codes)}_occupation4d_skills.csv"
+    
         # Save the dataframe to csv
-        csv_file_path = datasets_folder / "all_occupation4d_skills.csv"
+        csv_file_path = datasets_folder / filename
         df.to_csv(csv_file_path, index=False)
         
         print(f"Dataset saved successfully at {csv_file_path}")
