@@ -151,6 +151,37 @@ GET /plots/{plot_name}
 GET /plots/shap_bar_plot_C2511.png
 ```
 
+## Running Unit Tests
+This project uses **pytest**. Tests are located under the `tests/` folder.
+
+### Install test dependencies:
+```sh
+pip install pytest pytest-mock
+```
+
+### Run tests:
+```sh
+pytest
+```
+Make sure to run from the project root (where `main.py` lives), not from inside `tests/`.
+
+## Project Structure
+```
+├── main.py                          # FastAPI app
+├── fetch_all_occupation4d_skills.py
+├── fetch_specific_occupation4d_skills.py
+├── skill_occupation_ml_pipeline.py
+├── tests/
+│   ├── test_fetch_all_occupation4d_skills.py
+│   ├── test_fetch_specific_occupation4d_skills.py
+│   ├── test_main_api.py
+│   └── test_skill_occupation_ml_pipeline.py
+├── models/                          # Trained models (auto-created)
+├── plots/                           # SHAP visualizations
+├── feature_importance/              # CSVs with top skill importances
+├── datasets/                        # Raw data
+```
+
 ## Contributing
 Feel free to contribute by submitting issues or pull requests.
 
