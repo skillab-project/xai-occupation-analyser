@@ -139,26 +139,23 @@ def fetch_and_store_all_occupation_skills(min_level: int = 3, max_level: int = 3
                 page += 1
         
         # Prepare the dataframe
-        all_skill_labels = list(skill_labels.values())
-        df_data = []
-        
+        df_rows = []
         for job in all_jobs_data:
             row = {
                 "job_id": job["job_id"],
                 "upload_date": job["upload_date"],
                 "occupation4d": job["occupation4d"]
             }
-            for skill_label in all_skill_labels:
-                row[skill_label] = 0
-    
             for skill_id in job["skills"]:
                 skill_label = skill_labels.get(skill_id)
                 if skill_label:
-                    row[skill_label] = 1
-    
-            df_data.append(row)
-    
-        df = pd.DataFrame(df_data)
+                    row[skill_label] = 1  # Only storing 1s, assuming missing = 0
+            df_rows.append(row)
+        df = pd.DataFrame(df_rows)
+        df.fillna(0, inplace=True)
+        for col in df.columns:
+            if col not in ["job_id", "upload_date", "occupation4d"]:
+                df[col] = df[col].astype(pd.SparseDtype("int", fill_value=0))  # Apply SparseDtype only to skills
         
         # Save the dataframe to csv
         csv_file_path = datasets_folder / "all_occupation4d_skills.csv"
