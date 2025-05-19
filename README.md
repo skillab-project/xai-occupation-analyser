@@ -196,6 +196,8 @@ Make sure to run from the project root (where `main.py` lives), not from inside 
 ├── plots/                           # SHAP visualizations
 ├── feature_importance/              # CSVs with top skill importances
 ├── datasets/                        # Raw data
+├── Dockerfile
+└── README.md
 ```
 
 ## Contributing
