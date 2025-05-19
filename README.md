@@ -31,6 +31,22 @@ The API will be available at:
 http://127.0.0.1:8000
 ```
 
+## Running with Docker
+Build the Docker image:
+```sh
+docker build -t xai-occupation-analyser .
+```
+
+Run the container:
+```
+docker run -p 8000:8000 xai-occupation-analyser
+```
+
+The API will be available at:
+```
+http://127.0.0.1:8000
+```
+
 ## API Endpoints
 
 ### 1. Fetch All Occupation Skills
