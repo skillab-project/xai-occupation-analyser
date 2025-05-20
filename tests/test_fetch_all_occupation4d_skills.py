@@ -14,7 +14,7 @@ def test_fetch_all_skills_success(mocker):
     }
     skills_response = {"items": [{"id": 201, "label": "Python"}, {"id": 202, "label": "ML"}], "count": 2}
 
-    def side_effect(url, data):
+    def side_effect(url, data, headers=None):
         if "occupations" in url:
             return mocker.Mock(status_code=200, json=lambda: occupation_response)
         elif "jobs" in url:
@@ -23,6 +23,7 @@ def test_fetch_all_skills_success(mocker):
             return mocker.Mock(status_code=200, json=lambda: skills_response)
         raise ValueError("Unknown URL")
 
+    mocker.patch("fetch_all_occupation4d_skills.get_token", return_value="dummy_token")
     mocker.patch("fetch_all_occupation4d_skills.requests.post", side_effect=side_effect)
 
     result_path = fetch_and_store_all_occupation_skills()
