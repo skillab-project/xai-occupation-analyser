@@ -6,6 +6,9 @@ shap_values/
 models_performance/
 datasets/
 
++ # Environment variables (do not track secrets)
++ .env
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

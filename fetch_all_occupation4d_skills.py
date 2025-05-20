@@ -28,18 +28,32 @@ This function performs the following tasks:
     job ID, upload date, occupation ID, and skill labels.
 """
 
+import os
 import requests
 import pandas as pd
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+API = "http://skillab-tracker.csd.auth.gr/api"
+USERNAME = os.getenv("SKILLAB_API_USERNAME")
+PASSWORD = os.getenv("SKILLAB_API_PASSWORD")
 
 # Define API endpoints
-JOBS_URL = "http://skillab-tracker.csd.auth.gr/api/jobs"
-SKILLS_URL = "http://skillab-tracker.csd.auth.gr/api/skills"
-OCCUPATIONS_URL = "http://skillab-tracker.csd.auth.gr/api/occupations"
+JOBS_URL = f"{API}/jobs"
+SKILLS_URL = f"{API}/skills"
+OCCUPATIONS_URL = f"{API}/occupations"
 
 # Define the datasets folder path
 datasets_folder = Path("datasets")
 datasets_folder.mkdir(exist_ok=True)  # Create folder if it doesn't exist
+
+def get_token() -> str:
+    res = requests.post(f"{API}/login", json={"username": USERNAME, "password": PASSWORD})
+    res.raise_for_status()
+    return res.text.strip().replace('"', "")
 
 def fetch_and_store_all_occupation_skills(min_level: int = 3, max_level: int = 3, min_skill_level: int = 4, max_skill_level: int = 4):
     """
@@ -55,6 +69,8 @@ def fetch_and_store_all_occupation_skills(min_level: int = 3, max_level: int = 3
         str: Path to the saved CSV file.
     """
     try:
+        token = get_token()
+        HEADERS = {"Authorization": f"Bearer {token}"}
         payload = {"min_level": min_level, "max_level": max_level}
         
         # Initialize containers for aggregated occupation data
@@ -63,7 +79,7 @@ def fetch_and_store_all_occupation_skills(min_level: int = 3, max_level: int = 3
         
         while True:
             # Make the API call with pagination
-            response = requests.post(f"{OCCUPATIONS_URL}?page={page}", data=payload)
+            response = requests.post(f"{OCCUPATIONS_URL}?page={page}", data=payload, headers=HEADERS)
             response.raise_for_status()  # Raise an error for bad status codes
             
             # Parse JSON response
@@ -90,7 +106,7 @@ def fetch_and_store_all_occupation_skills(min_level: int = 3, max_level: int = 3
             
             while True:
                 # Call the jobs API with pagination
-                response = requests.post(f"{JOBS_URL}?page={page}", data=payload)
+                response = requests.post(f"{JOBS_URL}?page={page}", data=payload, headers=HEADERS)
                 response.raise_for_status()  # Check if the request was successful
                 
                 # Parse the JSON response
@@ -122,7 +138,7 @@ def fetch_and_store_all_occupation_skills(min_level: int = 3, max_level: int = 3
             
             while True:
                 # Call the skills API with pagination
-                skill_response = requests.post(f"{SKILLS_URL}?page={page}", data=skill_payload)
+                skill_response = requests.post(f"{SKILLS_URL}?page={page}", data=skill_payload, headers=HEADERS)
                 skill_response.raise_for_status()
                 skill_data = skill_response.json()
                 

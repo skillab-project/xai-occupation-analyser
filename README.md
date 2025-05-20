@@ -17,7 +17,7 @@ Ensure you have **Python 3.8+** installed.
 
 ### Install Dependencies
 ```sh
-pip install fastapi uvicorn pandas numpy scikit-learn matplotlib shap requests pydantic
+pip install fastapi uvicorn pandas numpy scikit-learn matplotlib shap requests pydantic python-dotenv
 ```
 
 ## Running the API

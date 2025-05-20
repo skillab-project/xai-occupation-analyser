@@ -28,17 +28,31 @@ This function performs the following tasks:
     job ID, upload date, occupation ID, and skill labels.
 """
 
+import os
 import requests
 import pandas as pd
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+API = "http://skillab-tracker.csd.auth.gr/api"
+USERNAME = os.getenv("SKILLAB_API_USERNAME")
+PASSWORD = os.getenv("SKILLAB_API_PASSWORD")
 
 # Define API endpoints
-JOBS_URL = "http://skillab-tracker.csd.auth.gr/api/jobs"
-SKILLS_URL = "http://skillab-tracker.csd.auth.gr/api/skills"
+JOBS_URL = f"{API}/jobs"
+SKILLS_URL = f"{API}/skills"
 
 # Define the datasets folder path
 datasets_folder = Path("datasets")
 datasets_folder.mkdir(exist_ok=True)  # Create folder if it doesn't exist
+
+def get_token() -> str:
+    res = requests.post(f"{API}/login", json={"username": USERNAME, "password": PASSWORD})
+    res.raise_for_status()
+    return res.text.strip().replace('"', "")
 
 def fetch_and_store_specific_occupation_skills(occupation_ids: list, min_skill_level: int = 4, max_skill_level: int = 4):
     """
@@ -53,6 +67,9 @@ def fetch_and_store_specific_occupation_skills(occupation_ids: list, min_skill_l
         str: Path to the saved CSV file.
     """
     try:
+        token = get_token()
+        HEADERS = {"Authorization": f"Bearer {token}"}
+                
         # Initialize containers for aggregated job and skill data
         all_jobs_data = []
         unique_skills = set()
@@ -63,7 +80,7 @@ def fetch_and_store_specific_occupation_skills(occupation_ids: list, min_skill_l
             
             while True:
                 # Call the jobs API with pagination
-                response = requests.post(f"{JOBS_URL}?page={page}", data=payload)
+                response = requests.post(f"{JOBS_URL}?page={page}", data=payload, headers=HEADERS)
                 response.raise_for_status()  # Check if the request was successful
                 
                 # Parse the JSON response
@@ -95,7 +112,7 @@ def fetch_and_store_specific_occupation_skills(occupation_ids: list, min_skill_l
             
             while True:
                 # Call the skills API with pagination
-                skill_response = requests.post(f"{SKILLS_URL}?page={page}", data=skill_payload)
+                skill_response = requests.post(f"{SKILLS_URL}?page={page}", data=skill_payload, headers=HEADERS)
                 skill_response.raise_for_status()
                 skill_data = skill_response.json()
                 
