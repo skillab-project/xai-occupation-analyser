@@ -61,7 +61,7 @@ POST /fetch_all_occupation_skills
   "max_level": 3,
   "min_skill_level": 4,
   "max_skill_level": 4,
-  "sources": ["kariera.gr", "lesjeudis"]
+  "sources": ["brightminds", "jobbguru", "jobbguru.se", "jobbland", "jobbland.se", "jobmedic", "jobmedic.co.uk", "jobscentral", "jobs.de", "kariera.fr", "kariera.gr", "lesjeudis", "lesjeudis.com", "OJA"]
 }
 ```
 **Response:**
@@ -80,7 +80,7 @@ POST /fetch_specific_occupation_skills
   "occupation_ids": ["http://data.europa.eu/esco/isco/C2511", "http://data.europa.eu/esco/isco/C2512", "http://data.europa.eu/esco/isco/C2513", "http://data.europa.eu/esco/isco/C2514", "http://data.europa.eu/esco/isco/C2519"],
   "min_skill_level": 4,
   "max_skill_level": 4,
-  "sources": ["kariera.gr", "lesjeudis"]
+  "sources": ["brightminds", "jobbguru", "jobbguru.se", "jobbland", "jobbland.se", "jobmedic", "jobmedic.co.uk", "jobscentral", "jobs.de", "kariera.fr", "kariera.gr", "lesjeudis", "lesjeudis.com", "OJA"]
 }
 ```
 **Response:**
