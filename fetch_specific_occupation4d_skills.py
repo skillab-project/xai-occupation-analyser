@@ -33,11 +33,12 @@ import requests
 import pandas as pd
 from pathlib import Path
 from dotenv import load_dotenv
+from typing import List, Optional
 
 # Load environment variables
 load_dotenv()
 
-API = "http://skillab-tracker.csd.auth.gr/api"
+API = "https://skillab-tracker.csd.auth.gr/api"
 USERNAME = os.getenv("SKILLAB_API_USERNAME")
 PASSWORD = os.getenv("SKILLAB_API_PASSWORD")
 
@@ -54,7 +55,7 @@ def get_token() -> str:
     res.raise_for_status()
     return res.text.strip().replace('"', "")
 
-def fetch_and_store_specific_occupation_skills(occupation_ids: list, min_skill_level: int = 4, max_skill_level: int = 4):
+def fetch_and_store_specific_occupation_skills(occupation_ids: list, min_skill_level: int = 4, max_skill_level: int = 4, sources: Optional[List[str]] = None):
     """
     Fetches job and skill data from the Skillab Tracker API and stores it as a CSV file.
 
@@ -62,6 +63,7 @@ def fetch_and_store_specific_occupation_skills(occupation_ids: list, min_skill_l
         occupation_ids (list): List of occupation IDs to retrieve job data for.
         min_skill_level (int): Minimum skill level filter for skills.
         max_skill_level (int): Maximum skill level filter for skills.
+        sources: (List): Return only jobs from these sources.
 
     Returns:
         str: Path to the saved CSV file.
@@ -76,6 +78,8 @@ def fetch_and_store_specific_occupation_skills(occupation_ids: list, min_skill_l
         
         for occupation_id in occupation_ids:
             payload = {"occupation_ids": occupation_id}
+            if sources:
+                payload["sources"] = sources
             page = 1
             
             while True:

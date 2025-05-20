@@ -43,11 +43,13 @@ class FetchAllOccupationSkillsRequest(BaseModel):
     max_level: Optional[int] = 3
     min_skill_level: Optional[int] = 4
     max_skill_level: Optional[int] = 4
+    sources: Optional[List[str]] = None
 
 class FetchSpecificOccupationSkillsRequest(BaseModel):
     occupation_ids: List[str]
     min_skill_level: Optional[int] = 4
     max_skill_level: Optional[int] = 4
+    sources: Optional[List[str]] = None
 
 class TrainModelRequest(BaseModel):
     file_path: Optional[str] = "datasets/all_occupation4d_skills.csv"
@@ -66,7 +68,7 @@ async def fetch_all_occupation_skills_api(request: FetchAllOccupationSkillsReque
 
 def fetch_and_store_all_occupation_skills_with_status(request: FetchAllOccupationSkillsRequest, task_id: str):
     try:
-        file_path = fetch_and_store_all_occupation_skills(request.min_level, request.max_level, request.min_skill_level, request.max_skill_level)
+        file_path = fetch_and_store_all_occupation_skills(request.min_level, request.max_level, request.min_skill_level, request.max_skill_level, sources=request.sources)
         task_status[task_id] = {"status": "completed", "file_path": file_path}
     except Exception as e:
         task_status[task_id] = {"status": "failed", "error": str(e)}
@@ -81,7 +83,7 @@ async def fetch_specific_occupation_skills_api(request: FetchSpecificOccupationS
 
 def fetch_and_store_specific_occupation_skills_with_status(request: FetchSpecificOccupationSkillsRequest, task_id: str):
     try:
-        file_path = fetch_and_store_specific_occupation_skills(request.occupation_ids, request.min_skill_level, request.max_skill_level)
+        file_path = fetch_and_store_specific_occupation_skills(request.occupation_ids, request.min_skill_level, request.max_skill_level, sources=request.sources)
         task_status[task_id] = {"status": "completed", "file_path": file_path}
     except Exception as e:
         task_status[task_id] = {"status": "failed", "error": str(e)}

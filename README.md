@@ -60,7 +60,8 @@ POST /fetch_all_occupation_skills
   "min_level": 3,
   "max_level": 3,
   "min_skill_level": 4,
-  "max_skill_level": 4
+  "max_skill_level": 4,
+  "sources": ["kariera.gr", "lesjeudis"]
 }
 ```
 **Response:**
@@ -78,7 +79,8 @@ POST /fetch_specific_occupation_skills
 {
   "occupation_ids": ["http://data.europa.eu/esco/isco/C2511", "http://data.europa.eu/esco/isco/C2512", "http://data.europa.eu/esco/isco/C2513", "http://data.europa.eu/esco/isco/C2514", "http://data.europa.eu/esco/isco/C2519"],
   "min_skill_level": 4,
-  "max_skill_level": 4
+  "max_skill_level": 4,
+  "sources": ["kariera.gr", "lesjeudis"]
 }
 ```
 **Response:**
