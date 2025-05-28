@@ -39,7 +39,7 @@ pipeline {
         // ****************************
         stage("Push_Image"){
             when {
-                environment name: "GIT_BRANCH", value: "origin/master"
+                environment name: "GIT_BRANCH", value: "origin/main"
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "${DOCKER_REG_CREDS}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]){
@@ -60,7 +60,7 @@ pipeline {
         // **************
         // stage("Deployment"){
         //     when {
-        //         environment name: "GIT_BRANCH", value: "origin/master"
+        //         environment name: "GIT_BRANCH", value: "origin/main"
         //     }
 
         //     steps {
