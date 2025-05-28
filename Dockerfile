@@ -17,7 +17,7 @@ COPY . /app
 
 # Install Python dependencies
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir fastapi uvicorn pandas numpy scikit-learn matplotlib shap requests pydantic python-dotenv
+RUN pip install --no-cache-dir fastapi uvicorn pandas numpy scikit-learn matplotlib shap requests pydantic python-dotenv pytest pytest-mock
 
 # Expose the port FastAPI will run on
 EXPOSE 8000
