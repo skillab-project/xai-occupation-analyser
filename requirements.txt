@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pandas
+numpy
+scikit-learn
+matplotlib
+shap
+requests
+pydantic
+python-dotenv
+httpx
+pytest
+pytest-mock
