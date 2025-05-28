@@ -14,21 +14,6 @@ pipeline {
     }
 
     stages {
-        // **************************
-        // *** RUN THE UNIT TESTS ***
-        // **************************
-        // stage("Run_Unit_Tests"){
-        //     steps {
-        //         echo "***** Running Unit Tests *****"
-		// 		script {
-		// 			docker.build("${APP_NAME}:test", ".")
-        //                   .inside('-e PYTHONPATH=/app') {
-        //                       sh 'pytest tests'
-        //                   }
-		// 		}
-        //     }
-        // }
-
         // *************************
         // *** IMAGE BUILD STAGE ***
         // *************************
@@ -36,6 +21,16 @@ pipeline {
             steps {
                 echo "***** Building Docker Image *****"
                 sh 'docker build -t ${APP_NAME}:test .'
+            }
+        }
+		
+		// **************************
+        // *** RUN THE UNIT TESTS ***
+        // **************************
+        stage("Run_Unit_Tests"){
+            steps {
+                echo "***** Running Unit Tests *****"
+				sh 'docker run --rm -e PYTHONPATH=/app ${APP_NAME}:test pytest'
             }
         }
 
