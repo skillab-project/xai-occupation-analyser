@@ -49,7 +49,7 @@ pipeline {
                     sh 'docker push ${DOCKER_REG}${DOCKER_REPO}${APP_NAME}:${DOCKER_TAG}'
 					
 					// Also tag and push as latest
-                    sh 'docker tag ${APP_NAME}:test ${DOCKER_REG}${DOCKER_REPO}${APP_NAME}:latest"
+                    sh 'docker tag ${APP_NAME}:test ${DOCKER_REG}${DOCKER_REPO}${APP_NAME}:latest'
                     sh 'docker push ${DOCKER_REG}${DOCKER_REPO}${APP_NAME}:latest'
                 }
             }
