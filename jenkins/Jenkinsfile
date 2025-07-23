@@ -11,9 +11,25 @@ pipeline {
         DOCKER_REG = "harbor.skillab-project.eu"
         DOCKER_REPO = "/skillab-all/"
         DOCKER_REG_CREDS = "harbor-creds"
+		ENV_FILE_CREDENTIALS = "tracker-api-creds"
     }
 
     stages {
+		// *********************************
+        // *** CREATE .env from Jenkins ****
+        // *********************************
+        stage("Prepare Env File") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: "${ENV_FILE_CREDENTIALS}", usernameVariable: 'TRACKER_USER', passwordVariable: 'TRACKER_PASS')]) {
+                    echo "***** Creating .env file *****"
+					sh """
+						echo "SKILLAB_API_USERNAME=${TRACKER_USER}" >> .env
+						echo "SKILLAB_API_PASSWORD=${TRACKER_PASS}" >> .env
+					"""
+                }
+            }
+        }
+	
         // *************************
         // *** IMAGE BUILD STAGE ***
         // *************************
@@ -30,7 +46,7 @@ pipeline {
         stage("Run_Unit_Tests"){
             steps {
                 echo "***** Running Unit Tests *****"
-				sh "docker run --rm -e PYTHONPATH=/app ${APP_NAME}:test pytest"
+				sh "docker run --rm --env-file .env -e PYTHONPATH=/app ${APP_NAME}:test pytest"
             }
         }
 
@@ -70,7 +86,7 @@ pipeline {
                     sh 'docker pull ${DOCKER_REG}${DOCKER_REPO}${APP_NAME}:${DOCKER_TAG}'
 					sh 'docker stop ${APP_NAME} || true'
 					sh 'docker rm ${APP_NAME} || true'
-                    sh 'docker run -d --name ${APP_NAME} -p 8873:8873 ${DOCKER_REG}${DOCKER_REPO}${APP_NAME}:${DOCKER_TAG}'
+                    sh 'docker run -d --env-file .env --name ${APP_NAME} -p 8873:8873 ${DOCKER_REG}${DOCKER_REPO}${APP_NAME}:${DOCKER_TAG}'
                     sh 'docker ps'
                 }
             }
