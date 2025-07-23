@@ -9,6 +9,9 @@ ENV PYTHONUNBUFFERED 1
 # Set work directory
 WORKDIR /app
 
+# Add Portainer team label
+LABEL io.portainer.accesscontrol.teams="skillab-all"
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y gcc
 
