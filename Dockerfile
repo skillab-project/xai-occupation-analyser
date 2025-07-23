@@ -23,7 +23,7 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose the port FastAPI will run on
-EXPOSE 8873
+EXPOSE 8875
 
 # Start FastAPI server
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8873"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8875"]
